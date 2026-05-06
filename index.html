@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emilio Blancas — Archivo de Fotografía</title>
+
+<!--
+╔══════════════════════════════════════════════════════╗
+║  CONFIGURACIÓN CLOUDINARY — edita solo estas líneas  ║
+║                                                      ║
+║  1. cloudinary.com → dashboard → copia Cloud name   ║
+║                                                      ║
+║  2. Settings → Upload → Upload Presets               ║
+║     → Add upload preset                              ║
+║     → Signing Mode: UNSIGNED  ← importante          ║
+║     → Guarda y copia el nombre del preset            ║
+╚══════════════════════════════════════════════════════╝
+-->
+<script>
+  const CLOUD_NAME    = 'dsqemqj16';     // ← ej. 'emilioblancas'
+  const UPLOAD_PRESET = 'foto';  // ← ej. 'portfolio_unsigned'
+  const FOLDER        = 'archivo-fotografico';
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --paper:#f5f0e8;--paper2:#ece6d8;--paper3:#e2dace;--paper4:#d8d0c4;
+  --ink:#1c1a16;--ink2:#3a3630;--ink3:#6b6458;--ink4:#a09890;
+  --red:#8b2e2e;--green:#2e5c3a;--amber:#7a5200;--border:#c8bfaf;
+}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:'Courier Prime',monospace;min-height:100vh;overflow-x:hidden}
+
+#cfg-warn{background:#fff8e1;border-bottom:1px solid #e8c840;padding:10px 3rem;font-size:10px;letter-spacing:.15em;color:#7a5200;display:none;gap:1rem;align-items:center;flex-wrap:wrap}
+#cfg-warn.show{display:flex}
+#cfg-warn code{background:#fdeea0;padding:1px 6px}
+#cfg-warn a{color:var(--amber);font-weight:700}
+
+header{background:var(--paper);border-bottom:2px solid var(--ink);padding:2.5rem 3rem 0}
+.h-top{display:flex;align-items:flex-start;justify-content:space-between;gap:2rem;padding-bottom:1.5rem}
+.logo-name{font-family:'Special Elite',cursive;font-size:3rem;color:var(--ink);letter-spacing:.04em;line-height:1}
+.logo-sub{font-family:'Courier Prime',monospace;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink3);margin-top:8px;border-top:1px solid var(--border);padding-top:6px}
+.h-right{text-align:right}
+.h-label{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink4)}
+.h-num{font-family:'Special Elite',cursive;font-size:3.5rem;color:var(--ink);line-height:1;margin-top:2px}
+.h-unit{font-size:10px;letter-spacing:.2em;color:var(--ink3);text-transform:uppercase}
+.h-rule{border:none;border-top:1px solid var(--ink)}
+.h-meta{display:flex;justify-content:space-between;padding:.6rem 0;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink4)}
+
+.controls{padding:.9rem 3rem;display:flex;align-items:center;gap:.4rem;border-bottom:1px solid var(--border);background:var(--paper2);flex-wrap:wrap}
+.fbtn{background:none;border:1px solid transparent;color:var(--ink3);font-family:'Courier Prime',monospace;font-size:9px;letter-spacing:.25em;text-transform:uppercase;padding:5px 12px;cursor:pointer;transition:all .2s}
+.fbtn:hover,.fbtn.on{border-color:var(--ink2);color:var(--ink);background:var(--paper)}
+.sep{color:var(--border);font-size:14px;user-select:none}
+.spacer{flex:1}
+.vbtn{background:none;border:1px solid var(--border);color:var(--ink3);font-size:9px;letter-spacing:.2em;text-transform:uppercase;padding:5px 10px;cursor:pointer;transition:all .2s;font-family:'Special Elite',cursive}
+.vbtn:hover,.vbtn.on{border-color:var(--ink2);color:var(--ink);background:var(--paper)}
+
+.upload-wrap{padding:1.5rem 3rem 0}
+.dzone{border:1px dashed var(--ink3);padding:2.2rem;text-align:center;cursor:pointer;transition:all .3s;position:relative;background:var(--paper2)}
+.dzone:hover,.dzone.drag{border-style:solid;border-color:var(--ink);background:var(--paper3)}
+.dzone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.dz-icon{font-family:'Special Elite',cursive;font-size:1.8rem;color:var(--ink3);margin-bottom:.5rem}
+.dz-title{font-family:'Special Elite',cursive;font-size:1.1rem;color:var(--ink2);margin-bottom:4px}
+.dz-sub{font-size:9px;letter-spacing:.25em;color:var(--ink4);text-transform:uppercase}
+
+.uopts{display:flex;align-items:center;gap:12px;padding:1rem 0 1.5rem;flex-wrap:wrap}
+.opt-lbl{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink3)}
+.cat-input{background:var(--paper2);border:1px solid var(--border);color:var(--ink);font-family:'Courier Prime',monospace;font-size:10px;letter-spacing:.15em;padding:5px 10px;width:240px;text-transform:uppercase}
+.cat-input:focus{outline:none;border-color:var(--ink)}
+.cat-input::placeholder{color:var(--ink4)}
+
+.prog-wrap{display:none;flex:1}
+.prog-wrap.show{display:block}
+.prog-lbl{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink3);margin-bottom:4px}
+.prog-bg{height:2px;background:var(--border);position:relative;overflow:hidden}
+.prog-fill{height:100%;background:var(--ink2);width:0%;transition:width .25s;position:absolute;top:0;left:0}
+
+.sbar{margin:0 3rem 1rem;padding:8px 14px;font-size:10px;letter-spacing:.12em;border-left:3px solid;display:none}
+.sbar.show{display:block}
+.sbar.loading{border-color:var(--ink3);background:#ece6d8;color:var(--ink3)}
+.sbar.ok{border-color:var(--green);background:#e8f0ea;color:var(--green)}
+.sbar.err{border-color:var(--red);background:#f5e8e8;color:var(--red)}
+
+.gallery{padding:0 3rem 3rem;columns:3;gap:16px}
+.gallery.g2{columns:2}
+.gallery.g4{columns:4}
+
+.pcard{break-inside:avoid;margin-bottom:16px;position:relative;cursor:pointer;box-shadow:3px 3px 0 var(--border);transition:box-shadow .2s,transform .2s;background:var(--paper3)}
+.pcard:hover{box-shadow:5px 5px 0 var(--ink3);transform:translate(-1px,-1px)}
+.pcard img{width:100%;display:block;filter:sepia(.06) contrast(1.02);transition:filter .3s}
+.pcard:hover img{filter:sepia(0) contrast(1.05)}
+.pcap{padding:8px 10px 10px;border-top:1px solid var(--border);background:var(--paper2)}
+.pcat{font-size:8px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink4);margin-bottom:2px}
+.pname{font-family:'Special Elite',cursive;font-size:.9rem;color:var(--ink);letter-spacing:.03em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pdel{position:absolute;top:8px;right:8px;background:var(--paper);border:1px solid var(--border);color:var(--ink3);width:26px;height:26px;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;opacity:0;transition:all .2s}
+.pcard:hover .pdel{opacity:1}
+.pdel:hover{background:var(--red);color:#fff;border-color:var(--red)}
+
+.empty{text-align:center;padding:5rem 0;width:100%}
+.stamp{font-family:'Special Elite',cursive;font-size:3.5rem;color:var(--border);border:4px solid var(--border);display:inline-block;padding:.4rem 1.4rem;transform:rotate(-3deg);margin-bottom:1.5rem;letter-spacing:.08em}
+.et{font-family:'Special Elite',cursive;font-size:1.2rem;color:var(--ink3);margin-bottom:6px}
+.es{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--ink4)}
+
+#modal{position:fixed;inset:0;background:rgba(24,22,18,.97);display:flex;align-items:center;justify-content:center;z-index:9999;opacity:0;pointer-events:none;transition:opacity .3s}
+#modal.on{opacity:1;pointer-events:all}
+.mi{display:flex;flex-direction:column;align-items:center;gap:1rem;max-width:90vw}
+#mimg{max-width:82vw;max-height:78vh;object-fit:contain;box-shadow:8px 8px 0 rgba(0,0,0,.6)}
+.mcap{text-align:center}
+.mname{font-family:'Special Elite',cursive;font-size:1.2rem;color:var(--paper);letter-spacing:.06em}
+.mmeta{font-size:9px;letter-spacing:.3em;color:var(--ink4);text-transform:uppercase;margin-top:5px}
+#mcls{position:fixed;top:1.5rem;right:2rem;background:none;border:1px solid #555;color:#999;width:34px;height:34px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+#mcls:hover{border-color:#ccc;color:#fff}
+.mnav{position:fixed;top:50%;transform:translateY(-50%);background:none;border:1px solid #444;color:#888;width:40px;height:60px;cursor:pointer;font-size:24px;display:flex;align-items:center;justify-content:center;transition:all .2s;font-family:'Special Elite',cursive}
+.mnav:hover{border-color:#ccc;color:#fff}
+#mprev{left:1.5rem}
+#mnext{right:1.5rem}
+
+footer{border-top:2px solid var(--ink);padding:1.25rem 3rem;background:var(--paper2);display:flex;justify-content:space-between;align-items:center;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink4)}
+.sig{font-family:'Special Elite',cursive;font-size:1rem;color:var(--ink3);letter-spacing:.08em}
+</style>
+</head>
+<body>
+
+<div id="cfg-warn">
+  <span>⚠ Configura tus credenciales:</span>
+  <span>Edita <code>CLOUD_NAME</code> y <code>UPLOAD_PRESET</code> en la sección CONFIG del archivo HTML.</span>
+  <a href="https://cloudinary.com/console" target="_blank">→ Ir a mi dashboard Cloudinary</a>
+</div>
+
+<header>
+  <div class="h-top">
+    <div>
+      <div class="logo-name">Emilio Blancas</div>
+      <div class="logo-sub">Archivo personal de fotografía</div>
+    </div>
+    <div class="h-right">
+      <div class="h-label">Fotografías</div>
+      <div class="h-num" id="count">0</div>
+      <div class="h-unit">en archivo</div>
+    </div>
+  </div>
+  <div class="h-rule"></div>
+  <div class="h-meta">
+    <span id="fecha"></span>
+    <span>∗ &nbsp; ∗ &nbsp; ∗</span>
+    <span>Monterrey, N.L. — México</span>
+  </div>
+</header>
+
+<div class="controls">
+  <button class="fbtn on" data-cat="all" onclick="filterCat('all')">Todo</button>
+  <span class="sep">|</span>
+  <span id="catbtns"></span>
+  <div class="spacer"></div>
+  <button class="vbtn on" onclick="setView(3,this)">|||</button>
+  <button class="vbtn"    onclick="setView(2,this)">||</button>
+  <button class="vbtn"    onclick="setView(4,this)">||||</button>
+</div>
+
+<div class="upload-wrap">
+  <div class="dzone" id="dzone" onclick="document.getElementById('fi').click()">
+    <input type="file" id="fi" accept="image/*" multiple>
+    <div class="dz-icon">[ + ]</div>
+    <div class="dz-title">Arrastra tus fotografías aquí</div>
+    <div class="dz-sub">o haz clic para seleccionar · JPG · PNG · WEBP · GIF</div>
+  </div>
+  <div class="uopts">
+    <span class="opt-lbl">Categoría:</span>
+    <input type="text" class="cat-input" id="catinput" placeholder="ej. PAISAJE, RETRATO, URBANO..." maxlength="30">
+    <div class="prog-wrap" id="progwrap">
+      <div class="prog-lbl" id="proglbl"></div>
+      <div class="prog-bg"><div class="prog-fill" id="progfill"></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="sbar" id="sbar"></div>
+
+<div class="gallery" id="gallery">
+  <div class="empty">
+    <div class="stamp">VACÍO</div>
+    <div class="et">El archivo espera su primera imagen</div>
+    <div style="height:6px"></div>
+    <div class="es">Sube una fotografía para comenzar</div>
+  </div>
+</div>
+
+<div id="modal">
+  <button id="mcls" onclick="closeMod()">✕</button>
+  <button class="mnav" id="mprev" onclick="navMod(-1)">‹</button>
+  <div class="mi">
+    <img id="mimg" src="" alt="">
+    <div class="mcap">
+      <div class="mname" id="mname"></div>
+      <div class="mmeta" id="mmeta"></div>
+    </div>
+  </div>
+  <button class="mnav" id="mnext" onclick="navMod(1)">›</button>
+</div>
+
+<footer>
+  <span class="sig">E. Blancas</span>
+  <span>Archivo fotográfico · Cloudinary CDN</span>
+  <span id="yr"></span>
+</footer>
+
+<script>
+document.getElementById('fecha').textContent =
+  new Date().toLocaleDateString('es-MX',{year:'numeric',month:'long',day:'numeric'});
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+const cfgOk = !CLOUD_NAME.startsWith('TU_') && !UPLOAD_PRESET.startsWith('TU_');
+if (!cfgOk) document.getElementById('cfg-warn').classList.add('show');
+
+const LS_KEY = 'eb_fotos_v2';
+let photos = [];
+try { photos = JSON.parse(localStorage.getItem(LS_KEY)) || []; } catch(e){ photos=[]; }
+function save(){ try{ localStorage.setItem(LS_KEY,JSON.stringify(photos)); }catch(e){} }
+
+let filtered=[], curIdx=-1, activeCat='all';
+
+function setSt(msg,type){
+  const el=document.getElementById('sbar');
+  el.textContent=msg; el.className='sbar show '+type;
+  if(type==='ok') setTimeout(()=>el.classList.remove('show'),4000);
+}
+
+document.getElementById('fi').addEventListener('change',e=>{
+  handleFiles(Array.from(e.target.files)); e.target.value='';
+});
+const dzone=document.getElementById('dzone');
+dzone.addEventListener('dragover',e=>{e.preventDefault();dzone.classList.add('drag');});
+dzone.addEventListener('dragleave',()=>dzone.classList.remove('drag'));
+dzone.addEventListener('drop',e=>{
+  e.preventDefault(); dzone.classList.remove('drag');
+  handleFiles(Array.from(e.dataTransfer.files).filter(f=>f.type.startsWith('image/')));
+});
+
+async function handleFiles(files){
+  if(!cfgOk){setSt('Configura CLOUD_NAME y UPLOAD_PRESET primero.','err');return;}
+  const cat=(document.getElementById('catinput').value.trim().toUpperCase())||'GENERAL';
+  const total=files.length;
+  const pw=document.getElementById('progwrap');
+  const pf=document.getElementById('progfill');
+  const pl=document.getElementById('proglbl');
+  pw.classList.add('show');
+  let done=0;
+
+  for(const file of files){
+    pl.textContent=`Subiendo ${done+1} de ${total} — ${file.name}`;
+    pf.style.width=Math.round((done/total)*100)+'%';
+    setSt(`Subiendo ${done+1} de ${total}...`,'loading');
+
+    const fd=new FormData();
+    fd.append('file',file);
+    fd.append('upload_preset',UPLOAD_PRESET);
+    fd.append('folder',FOLDER+'/'+cat);
+
+    try{
+      const res=await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,{method:'POST',body:fd});
+      if(!res.ok){const e=await res.json();throw new Error(e.error?.message||res.statusText);}
+      const d=await res.json();
+      const nombre=file.name.replace(/\.[^/.]+$/,'').replace(/[-_]/g,' ');
+      const fecha=new Date().toLocaleDateString('es-MX',{year:'numeric',month:'short',day:'numeric'});
+      photos.unshift({
+        id:d.public_id,
+        src:d.secure_url,
+        thumb:d.secure_url.replace('/upload/','/upload/w_600,q_auto,f_auto/'),
+        name:nombre, cat, date:fecha, w:d.width, h:d.height
+      });
+      done++;
+    }catch(err){
+      setSt('Error al subir '+file.name+': '+err.message,'err');
+    }
+  }
+
+  pf.style.width='100%';
+  setTimeout(()=>{pw.classList.remove('show');pf.style.width='0%';},800);
+  save(); updateGallery(); updateCats();
+  setSt(done+' fotografía(s) añadida(s) al archivo.','ok');
+}
+
+function deletePhoto(idx){
+  if(!confirm('¿Eliminar esta fotografía del archivo?\n(La imagen en Cloudinary se conserva)')) return;
+  photos.splice(idx,1); save(); updateGallery(); updateCats();
+  setSt('Fotografía eliminada del archivo local.','ok');
+}
+
+function updateGallery(){
+  document.getElementById('count').textContent=photos.length;
+  filtered=activeCat==='all'?photos:photos.filter(p=>p.cat===activeCat);
+  const gal=document.getElementById('gallery');
+  gal.innerHTML='';
+  if(photos.length===0){
+    gal.innerHTML=`<div class="empty"><div class="stamp">VACÍO</div>
+      <div class="et">El archivo espera su primera imagen</div>
+      <div style="height:6px"></div><div class="es">Sube una fotografía para comenzar</div></div>`;
+    return;
+  }
+  if(filtered.length===0){
+    gal.innerHTML=`<div class="empty"><div class="et">Sin fotografías en esta categoría</div></div>`;
+    return;
+  }
+  filtered.forEach((p,i)=>{
+    const ri=photos.indexOf(p);
+    const c=document.createElement('div');
+    c.className='pcard';
+    c.innerHTML=`<img src="${p.thumb||p.src}" alt="${p.name}" loading="lazy">
+      <div class="pcap"><div class="pcat">${p.cat}</div><div class="pname">${p.name}</div></div>
+      <button class="pdel" title="Eliminar" onclick="event.stopPropagation();deletePhoto(${ri})">✕</button>`;
+    c.addEventListener('click',()=>openMod(i));
+    gal.appendChild(c);
+  });
+}
+
+function updateCats(){
+  const cats=[...new Set(photos.map(p=>p.cat))];
+  document.getElementById('catbtns').innerHTML=cats.map(c=>
+    `<button class="fbtn ${activeCat===c?'on':''}" data-cat="${c}" onclick="filterCat('${c}')">${c}</button><span class="sep">|</span>`
+  ).join('');
+}
+
+function filterCat(cat){
+  activeCat=cat;
+  document.querySelectorAll('.fbtn').forEach(b=>b.classList.toggle('on',b.dataset.cat===cat));
+  updateGallery();
+}
+
+function setView(n,btn){
+  document.querySelectorAll('.vbtn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('gallery').className='gallery'+(n===2?' g2':n===4?' g4':'');
+}
+
+function openMod(idx){
+  curIdx=idx; const p=filtered[idx];
+  document.getElementById('mimg').src=p.src;
+  document.getElementById('mname').textContent=p.name;
+  document.getElementById('mmeta').textContent=`${p.cat}  ·  ${p.date}  ·  ${idx+1} / ${filtered.length}`;
+  document.getElementById('modal').classList.add('on');
+}
+function closeMod(){document.getElementById('modal').classList.remove('on');}
+function navMod(d){curIdx=(curIdx+d+filtered.length)%filtered.length;openMod(curIdx);}
+
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('modal').classList.contains('on'))return;
+  if(e.key==='ArrowRight')navMod(1);
+  if(e.key==='ArrowLeft')navMod(-1);
+  if(e.key==='Escape')closeMod();
+});
+document.getElementById('modal').addEventListener('click',e=>{
+  if(e.target===document.getElementById('modal'))closeMod();
+});
+
+updateGallery(); updateCats();
+</script>
+</body>
+</html>
